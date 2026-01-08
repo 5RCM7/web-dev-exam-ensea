@@ -50,6 +50,7 @@ export const renderRecipeCard = (recipe) => {
 	return `
 		<div class="col-md-6 col-lg-4">
 			<div class="card h-100 shadow-sm hover-shadow transition">
+				<img src="${recipe.image}" class="card-img-top" alt="${recipe.name}" style="max-height: 200px; object-fit: cover;">
 				<div class="card-body d-flex flex-column">
 					<!-- En-tête de la carte -->
 					<div class="d-flex justify-content-between align-items-start mb-3">
