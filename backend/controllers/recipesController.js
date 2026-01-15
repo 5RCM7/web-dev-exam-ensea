@@ -161,7 +161,23 @@ export const deleteRecipe = (req, res) => {
 
 export const searchRecipes = (req, res) => {
 	try {
-		// Votre code ici (BONUS)
+		const recipes = readRecipes(recipesPath)
+		const { search } = req.query
+
+		// If no search term provided, return all recipes
+		if (!search || String(search).trim() === "") {
+			return res.json(recipes)
+		}
+
+		const term = String(search).toLowerCase()
+
+		const filtered = recipes.filter((r) =>
+			String(r.name || "")
+				.toLowerCase()
+				.includes(term),
+		)
+
+		return res.json(filtered)
 	} catch (error) {
 		res.status(500).json({ error: error.message })
 	}
