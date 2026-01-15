@@ -127,7 +127,21 @@ export const updateRecipe = (req, res) => {
 
 export const deleteRecipe = (req, res) => {
 	try {
-		// Votre code ici
+		const recipes = readRecipes(recipesPath)
+		const { id } = req.params
+		const recipeId = parseInt(id, 10)
+
+		const index = recipes.findIndex((r) => r.id === recipeId)
+
+		if (index === -1) {
+			return res.status(404).json({ error: "Recipe not found" })
+		}
+
+		const filteredRecipes = recipes.filter((r) => r.id !== recipeId)
+
+		writeRecipes(filteredRecipes, recipesPath)
+
+		return res.status(200).json({ message: "Recette supprimée avec succès" })
 	} catch (error) {
 		res.status(500).json({ error: error.message })
 	}

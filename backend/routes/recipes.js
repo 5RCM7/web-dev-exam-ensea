@@ -1,6 +1,7 @@
 import { Router } from "express"
 import {
 	createRecipe,
+	deleteRecipe,
 	getRecipeById,
 	getRecipes,
 	updateRecipe,
@@ -12,5 +13,6 @@ router.get("/", getRecipes)
 router.post("/", createRecipe)
 router.get("/:id", getRecipeById)
 router.put("/:id", updateRecipe)
+router.delete("/:id", deleteRecipe)
 
 export default router
