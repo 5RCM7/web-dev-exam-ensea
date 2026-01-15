@@ -91,7 +91,22 @@ export const createRecipe = (req, res) => {
 
 export const updateRecipe = (req, res) => {
 	try {
-		// Votre code ici
+		const recipes = readRecipes(recipesPath)
+
+		const { id } = req.params
+		const recipeId = parseInt(id, 10)
+
+		const index = recipes.findIndex((r) => r.id === recipeId)
+
+		if (index === -1) {
+			return res.status(404).json({ error: "Recipe not found" })
+		}
+
+		recipes[index] = { ...recipes[index], ...req.body, id: recipeId }
+
+		writeRecipes(recipes, recipesPath)
+
+		return res.json(recipes[index])
 	} catch (error) {
 		res.status(500).json({ error: error.message })
 	}
