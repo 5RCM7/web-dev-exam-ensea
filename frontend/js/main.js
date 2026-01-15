@@ -1,7 +1,7 @@
 // ============================================
 // IMPORTS - Modules nécessaires
 // ============================================
-import { getAllRecipes, createRecipe } from "./api.js"
+import { getAllRecipes, createRecipe, searchRecipes } from "./api.js"
 import { renderRecipeCard, clearRecipesList } from "./ui.js"
 
 // ============================================
@@ -82,6 +82,49 @@ const setupEventListeners = () => {
 	if (addRecipeForm) {
 		addRecipeForm.addEventListener("submit", handleAddRecipe)
 	}
+
+	// Event listeners pour la recherche
+	const searchInput = document.getElementById("searchInput")
+	const clearSearchBtn = document.getElementById("clearSearchBtn")
+
+	if (searchInput) {
+		// Recherche en temps réel (après 300ms de pause)
+		let searchTimeout
+		searchInput.addEventListener("input", (e) => {
+			clearTimeout(searchTimeout)
+			const term = e.target.value.trim()
+
+			if (term === "") {
+				clearSearchBtn.style.display = "none"
+				loadRecipes() // Recharger toutes les recettes
+			} else {
+				clearSearchBtn.style.display = "block"
+				// Délai pour éviter trop de requêtes
+				searchTimeout = setTimeout(() => {
+					handleSearch(term)
+				}, 300)
+			}
+		})
+
+		// Recherche au clic sur Enter
+		searchInput.addEventListener("keypress", (e) => {
+			if (e.key === "Enter") {
+				e.preventDefault()
+				const term = e.target.value.trim()
+				if (term !== "") {
+					handleSearch(term)
+				}
+			}
+		})
+	}
+
+	if (clearSearchBtn) {
+		clearSearchBtn.addEventListener("click", () => {
+			searchInput.value = ""
+			clearSearchBtn.style.display = "none"
+			loadRecipes() // Recharger toutes les recettes
+		})
+	}
 }
 
 // ============================================
@@ -147,5 +190,25 @@ export const handleAddRecipe = async (event) => {
 	} catch (error) {
 		console.error("Erreur lors de l'ajout de la recette:", error)
 		alert("Erreur lors de l'ajout de la recette. Veuillez réessayer.")
+	}
+}
+
+// ============================================
+// RECHERCHER DES RECETTES (BONUS)
+// ============================================
+/**
+ * Gère la recherche de recettes par nom
+ * @param {string} searchTerm - Le terme de recherche
+ */
+const handleSearch = async (searchTerm) => {
+	try {
+		// Appeler l'API de recherche
+		const recipes = await searchRecipes(searchTerm)
+
+		// Afficher les résultats
+		displayRecipes(recipes)
+	} catch (error) {
+		console.error("Erreur lors de la recherche:", error)
+		alert("Erreur lors de la recherche. Veuillez réessayer.")
 	}
 }
