@@ -61,7 +61,15 @@ export const getRecipeById = (req, res) => {
 
 export const createRecipe = (req, res) => {
 	try {
-		// Votre code ici
+		const recipes = readRecipes(recipesPath)
+
+		const newRecipe = { id: Date.now(), ...req.body }
+		recipes.push(newRecipe)
+
+		// helpers/writeRecipes signature is (recipes, recipesPath)
+		writeRecipes(recipes, recipesPath)
+
+		return res.status(201).json(newRecipe)
 	} catch (error) {
 		res.status(500).json({ error: error.message })
 	}
